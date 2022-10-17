@@ -7,6 +7,7 @@ import org.openlab.openlabcustomerservice.services.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path="/api")
@@ -21,6 +22,7 @@ public class CustomerRestAPI  {
 
     @PostMapping(path="/customers")
     public CustomerResponseDTO save(CustomerRequestDTO customerRequestDTO){
+        customerRequestDTO.setId(UUID.randomUUID().toString());
         return customerService.save(customerRequestDTO);
     }
 
