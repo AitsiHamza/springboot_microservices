@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,6 +28,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceResponseDTO save(InvoiceRequestDTO invoiceRequestDTO) {
         Invoice invoice=invoiceMapper.fromInvoiceRequestDTO(invoiceRequestDTO);
         invoice.setId(UUID.randomUUID().toString());
+        invoice.setDate(new Date());
+
         Invoice saveInvoice=invoiceRepository.save(invoice);
         return invoiceMapper.fromInvoice(saveInvoice);
     }
@@ -42,6 +45,20 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceResponseDTO> invoicesByCustomerId(String id) {
         List<Invoice> invoices=invoiceRepository.findByCustomerID(id);
+        return invoices.stream().map(invoice -> {
+            Customer customer=customerRestClient.getCustomer(invoice.getCustomerID());
+            invoice.setCustomer(customer);
+            return invoiceMapper.fromInvoice(invoice);
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceResponseDTO> getAllInvoices() {
+        List<Invoice> invoices=invoiceRepository.findAll();
+        invoices.forEach(invoice->{
+            Customer customer=customerRestClient.getCustomer(invoice.getCustomerID());
+            invoice.setCustomer(customer);
+        });
         return invoices.stream().map(invoice->invoiceMapper.fromInvoice(invoice)).collect(Collectors.toList());
     }
 }

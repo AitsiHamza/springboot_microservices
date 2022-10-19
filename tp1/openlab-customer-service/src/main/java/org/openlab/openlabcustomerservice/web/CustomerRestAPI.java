@@ -26,8 +26,8 @@ public class CustomerRestAPI  {
         return customerService.save(customerRequestDTO);
     }
 
-    @PostMapping(path="/customers/{id}")
-    public CustomerResponseDTO save(@PathVariable String id){
+    @GetMapping(path="/customers/{id}")
+    public CustomerResponseDTO getCustomer(@PathVariable(name="id") String id){
         return customerService.getCustomer(id);
     }
 
