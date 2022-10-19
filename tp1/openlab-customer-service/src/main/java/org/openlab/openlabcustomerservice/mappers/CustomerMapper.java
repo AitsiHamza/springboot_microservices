@@ -7,7 +7,7 @@ import org.openlab.openlabcustomerservice.dto.CustomerResponseDTO;
 import org.openlab.openlabcustomerservice.entities.Customer;
 import org.springframework.stereotype.Component;
 
-@Mapper//(componentModel="string")
+@Mapper//(componentModel="spring")
 public interface CustomerMapper {
     CustomerMapper INSTANCE = Mappers.getMapper( CustomerMapper.class );
     CustomerResponseDTO customerToCustomerResponseDTO(Customer customer);
