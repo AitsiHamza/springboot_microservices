@@ -4,6 +4,7 @@ import com.example.ensetbillingservice.dto.Customer;
 import com.example.ensetbillingservice.dto.InvoiceRequestDTO;
 import com.example.ensetbillingservice.dto.InvoiceResponseDTO;
 import com.example.ensetbillingservice.entities.Invoice;
+import com.example.ensetbillingservice.exceptions.ClientCustomerNotFoundException;
 import com.example.ensetbillingservice.mappers.InvoiceMapper;
 import com.example.ensetbillingservice.openfeign.CustomerRestClient;
 import com.example.ensetbillingservice.repositories.InvoiceRepository;
@@ -25,12 +26,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     private CustomerRestClient customerRestClient;
 
     @Override
-    public InvoiceResponseDTO save(InvoiceRequestDTO invoiceRequestDTO) {
+    public InvoiceResponseDTO save(InvoiceRequestDTO invoiceRequestDTO) throws ClientCustomerNotFoundException {
+        Customer customer=customerRestClient.getCustomer(invoiceRequestDTO.getCustomerID());
+        if(customer==null)throw new ClientCustomerNotFoundException("This customer "+invoiceRequestDTO.getCustomerID()+" doesn't exist!");
         Invoice invoice=invoiceMapper.fromInvoiceRequestDTO(invoiceRequestDTO);
         invoice.setId(UUID.randomUUID().toString());
         invoice.setDate(new Date());
 
         Invoice saveInvoice=invoiceRepository.save(invoice);
+        saveInvoice.setCustomer(customer);
         return invoiceMapper.fromInvoice(saveInvoice);
     }
 

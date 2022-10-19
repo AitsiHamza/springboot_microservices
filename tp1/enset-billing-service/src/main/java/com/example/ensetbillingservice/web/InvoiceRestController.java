@@ -2,6 +2,7 @@ package com.example.ensetbillingservice.web;
 
 import com.example.ensetbillingservice.dto.InvoiceRequestDTO;
 import com.example.ensetbillingservice.dto.InvoiceResponseDTO;
+import com.example.ensetbillingservice.exceptions.ClientCustomerNotFoundException;
 import com.example.ensetbillingservice.services.InvoiceService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class InvoiceRestController {
     }
 
     @PostMapping("/invoice")
-    public InvoiceResponseDTO save(@RequestBody InvoiceRequestDTO invoiceRequestDTO){
+    public InvoiceResponseDTO save(@RequestBody InvoiceRequestDTO invoiceRequestDTO) throws ClientCustomerNotFoundException {
         return invoiceService.save(invoiceRequestDTO);
     }
 
