@@ -1,0 +1,31 @@
+version: '2'
+services:
+  eureka:
+    image: eureka
+    ports:
+      - "8761:8761"
+  customer:
+    image: customer
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka
+    environment:
+      - eureka.client.service-url.defaultZone=http://registration:8761/eureka
+  billing:
+    image: billing
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eureka
+      - customer
+    environment:
+      - eureka.client.service-url.defaultZone=http://registration:8761/eureka
+  gateway:
+    image: gateway
+    ports:
+      - "9999:9999"
+    depends_on:
+      - eureka
+      - billing
+      - customer
