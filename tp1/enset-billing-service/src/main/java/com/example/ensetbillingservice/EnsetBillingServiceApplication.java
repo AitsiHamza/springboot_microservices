@@ -22,6 +22,8 @@ public class EnsetBillingServiceApplication {
     @Bean
     CommandLineRunner commandLineRunner(InvoiceService invoiceService){
         return args->{
+            Thread.sleep(10_000);
+            System.out.println("10s");
             invoiceService.save(new InvoiceRequestDTO(BigDecimal.valueOf(75000),"111"));
             invoiceService.save(new InvoiceRequestDTO(BigDecimal.valueOf(715000),"112"));
             invoiceService.save(new InvoiceRequestDTO(BigDecimal.valueOf(5000),"112"));

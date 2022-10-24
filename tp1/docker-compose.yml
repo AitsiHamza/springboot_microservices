@@ -1,31 +1,55 @@
-version: '2'
+version: '3'
 services:
-  eureka:
-    image: eureka
+  eureka-service:
+    #build: ./adria-eureka-service/
+    #hostname: eureka-service
+    image: eureka-service
     ports:
       - "8761:8761"
-  customer:
-    image: customer
+    networks:
+      - default-network
+
+  customer-service:
+    #build: ./openlab-customer-service/
+    image: customer-service
     ports:
       - "8082:8082"
+    #restart: on-failure
     depends_on:
-      - eureka
+      - eureka-service
     environment:
-      - eureka.client.service-url.defaultZone=http://registration:8761/eureka
-  billing:
-    image: billing
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+    networks:
+      - default-network
+
+  billing-service:
+    #build: ./enset-billing-service/
+    image: billing-service
     ports:
       - "8083:8083"
+    restart: on-failure
     depends_on:
-      - eureka
-      - customer
+      - customer-service
+      - eureka-service
     environment:
-      - eureka.client.service-url.defaultZone=http://registration:8761/eureka
-  gateway:
-    image: gateway
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+    networks:
+      - default-network
+
+  gateway-service:
+    #build: ./intelcia-gateway/
+    image: gateway-service
     ports:
       - "9999:9999"
     depends_on:
-      - eureka
-      - billing
-      - customer
+      - customer-service
+      - billing-service
+      - eureka-service
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+    networks:
+      - default-network
+
+networks:
+  default-network:
+    driver: bridge
