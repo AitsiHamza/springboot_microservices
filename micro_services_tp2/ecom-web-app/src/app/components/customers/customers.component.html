@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="table" *ngIf="customers">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let customer of customers._embedded.customers">
+      <td>{{customer.id}}</td>
+      <td>{{customer.name}}</td>
+      <td>{{customer.email}}</td>
+      <td><button class="btn btn-success" (click)="getOrders(customer)">Orders</button></td>
+    </tr>
+    </tbody>
+  </div>
+
+</div>
